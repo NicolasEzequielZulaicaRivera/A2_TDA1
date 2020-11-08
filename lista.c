@@ -99,6 +99,34 @@ int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
  * Devuelve 0 si pudo eliminar o -1 si no pudo.
  */
 int lista_borrar(lista_t* lista){
+  if(!lista) return -1;
+
+  if( lista->cantidad == 0 ) return 0;
+
+  if( lista->cantidad == 1 ){
+      free( lista->nodo_inicio );
+      lista->nodo_inicio = lista->nodo_fin = NULL;
+      lista->cantidad--;
+      return 0;
+  }
+
+  nodo_t* anteultimo = lista->nodo_inicio;
+
+  for( int i=1 ; i < lista->cantidad-1 ; i++ ){
+    if(!anteultimo) return-1;
+    anteultimo = anteultimo->siguiente;
+  }
+
+  if( anteultimo->siguiente != lista->nodo_fin )
+    return -1;
+
+  free( anteultimo->siguiente );
+
+  lista->nodo_fin = anteultimo;
+  anteultimo->siguiente = NULL;
+
+  lista->cantidad--;
+
   return 0;
 }
 

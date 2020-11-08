@@ -118,7 +118,8 @@ void probar_insertar(){
     *(int*)lista->nodo_inicio->elemento==5 &&
     *(int*)lista->nodo_inicio->siguiente->elemento==1 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "Insertar Inicio");
+    "Insertar Inicio"
+  );
 
   lista_insertar_en_posicion( lista, &num[4], 2 );
   pa2m_afirmar(
@@ -128,10 +129,33 @@ void probar_insertar(){
     *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==5 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==2 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "Insertar en posicion");
+    "Insertar en posicion"
+  );
 
   lista_destruir( lista );// Checkeada con valgrind
 }
+
+void probar_eliminar(){
+
+  lista_t* lista = lista_crear() ;
+  int num[5] = {1,2,3,4,5};
+  for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
+
+  lista_borrar( lista );
+  pa2m_afirmar(
+    lista->cantidad == 4 &&
+    *(int*)lista->nodo_inicio->elemento== 1 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento == 2 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento== 3 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento == 4 &&
+    !lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente ,
+    "Eliminar"
+  );
+
+  lista_destruir( lista );// Checkeada con valgrind
+}
+
+// BUJIAS
 
 int main(int argc, char const *argv[]) {
 
@@ -143,6 +167,9 @@ int main(int argc, char const *argv[]) {
 
       pa2m_nuevo_grupo("PRUEBAS DE INSERTAR");
       probar_insertar();
+
+      pa2m_nuevo_grupo("PRUEBAS DE ELIMINAR");
+      probar_eliminar();
     }
 
     printf("\n");
