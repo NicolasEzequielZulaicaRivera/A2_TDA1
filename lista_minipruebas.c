@@ -94,7 +94,7 @@ void mini_pruebas_originales(){
   probar_operaciones_pila();
 }
 
-void probar_lista(){
+void probar_insertar(){
 
   lista_t* lista;
 
@@ -105,8 +105,30 @@ void probar_lista(){
   pa2m_afirmar(
     lista->cantidad == 5 &&
     *(int*)lista->nodo_inicio->elemento==1 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==2 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==3 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==4 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente->elemento==5 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "Insertar - Cantidad | Inicio | Fin");
+    "Insertar Fin");
+
+  lista_insertar_en_posicion( lista, &num[4], 0 );
+  pa2m_afirmar(
+    lista->cantidad == 6 &&
+    *(int*)lista->nodo_inicio->elemento==5 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==1 &&
+    *(int*)lista->nodo_fin->elemento==5 ,
+    "Insertar Inicio");
+
+  lista_insertar_en_posicion( lista, &num[4], 2 );
+  pa2m_afirmar(
+    lista->cantidad == 6 &&
+    *(int*)lista->nodo_inicio->elemento==5 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==1 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==5 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==2 &&
+    *(int*)lista->nodo_fin->elemento==5 ,
+    "Insertar en posicion");
 
   lista_destruir( lista );// Checkeada con valgrind
 }
@@ -119,8 +141,8 @@ int main(int argc, char const *argv[]) {
       //mini_pruebas_originales();
     } else {
 
-      pa2m_nuevo_grupo("PRUEBAS DE LISTA");
-      probar_lista();
+      pa2m_nuevo_grupo("PRUEBAS DE INSERTAR");
+      probar_insertar();
     }
 
     printf("\n");
