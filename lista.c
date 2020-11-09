@@ -1,6 +1,5 @@
 #include "lista.h"
 #include <stdlib.h>
-#include <stdio.h> // printf - borrar luego
 
 
 lista_t* lista_crear(){
@@ -64,16 +63,10 @@ int lista_insertar(lista_t* lista, void* elemento){
   return 0;
 }
 
-/*
- * Inserta un elemento en la posicion indicada, donde 0 es insertar
- * como primer elemento y 1 es insertar luego del primer elemento.
- * En caso de no existir la posicion indicada, lo inserta al final.
- * Devuelve 0 si pudo insertar o -1 si no pudo.
- */
 int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
 
   if(!lista) return -1;
-  if( posicion > lista->cantidad ) return -1;
+  if( posicion > lista->cantidad ) posicion = lista->cantidad;
 
   if( posicion == 0 ) return lista_insertar_inicio( lista, elemento );
   if( posicion == lista->cantidad ) return lista_insertar( lista, elemento );
@@ -94,14 +87,10 @@ int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
   return 0;
 }
 
-/*
- * Quita de la lista el elemento que se encuentra en la ultima posición.
- * Devuelve 0 si pudo eliminar o -1 si no pudo.
- */
 int lista_borrar(lista_t* lista){
   if(!lista) return -1;
 
-  if( lista->cantidad == 0 ) return 0;
+  if( lista->cantidad == 0 ) return -1;
 
   if( lista->cantidad == 1 ){
       free( lista->nodo_inicio );
@@ -130,14 +119,33 @@ int lista_borrar(lista_t* lista){
   return 0;
 }
 
-/*
- * Quita de la lista el elemento que se encuentra en la posición
- * indicada, donde 0 es el primer elemento.
- * En caso de no existir esa posición se intentará borrar el último
- * elemento.
- * Devuelve 0 si pudo eliminar o -1 si no pudo.
- */
 int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
+  if(!lista) return -1;
+  if( lista->cantidad == 0 ) return -1;
+  if( posicion >= lista->cantidad ) posicion = lista->cantidad-1;
+
+  if( posicion == lista->cantidad-1 ) return lista_borrar( lista );
+  if( posicion == 0 ){
+    nodo_t* aux = lista->nodo_inicio;
+    lista->nodo_inicio = lista->nodo_inicio->siguiente;
+    free( aux );
+    lista->cantidad--;
+    return 0;
+  }
+
+  nodo_t* nodo_anterior = lista->nodo_inicio;
+
+  for( int i=0 ; i < posicion-1 ; i++ ){
+    if(!nodo_anterior) return-1;
+    nodo_anterior = nodo_anterior->siguiente;
+  }
+
+  nodo_t* nodo = nodo_anterior->siguiente;
+  nodo_anterior->siguiente = nodo->siguiente;
+  free( nodo );
+
+  lista->cantidad--;
+
   return 0;
 }
 
@@ -148,7 +156,18 @@ int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
  * Si no existe dicha posicion devuelve NULL.
  */
 void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
-  return NULL;
+  if( !lista ) return NULL;
+  if( posicion >= lista->cantidad ) return NULL;
+  if( posicion == lista->cantidad-1 ) return lista_ultimo(lista);
+
+  nodo_t* nodo = lista->nodo_inicio;
+
+  for( int i=0 ; i < posicion ; i++ ){
+    if(!nodo) return NULL;
+    nodo = nodo->siguiente;
+  }
+
+  return nodo->elemento;
 }
 
 /*
@@ -156,21 +175,21 @@ void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
  * encuentra vacía.
  */
 void* lista_ultimo(lista_t* lista){
-  return NULL;
+  if( !lista ) return NULL;
+  if( !lista->nodo_fin ) return NULL;
+  return lista->nodo_fin->elemento;
 }
 
-/*
- * Devuelve true si la lista está vacía o false en caso contrario.
- */
 bool lista_vacia(lista_t* lista){
+  if( !lista ) return false;
+
+  if( !lista->cantidad ) return true;
   return false;
 }
 
-/*
- * Devuelve la cantidad de elementos almacenados en la lista.
- */
 size_t lista_elementos(lista_t* lista){
-  return 0;
+  if(!lista) return 0;
+  return lista->cantidad;
 }
 
 /*

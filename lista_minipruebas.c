@@ -96,9 +96,7 @@ void mini_pruebas_originales(){
 
 void probar_insertar(){
 
-  lista_t* lista;
-
-  pa2m_afirmar( (bool)( lista = lista_crear() ) && !lista->cantidad , "Crear Lista");
+  lista_t* lista = lista_crear();
 
   int num[5] = {1,2,3,4,5};
   for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
@@ -110,7 +108,7 @@ void probar_insertar(){
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==4 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente->elemento==5 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "Insertar Fin");
+    "lista_insertar");
 
   lista_insertar_en_posicion( lista, &num[4], 0 );
   pa2m_afirmar(
@@ -118,7 +116,7 @@ void probar_insertar(){
     *(int*)lista->nodo_inicio->elemento==5 &&
     *(int*)lista->nodo_inicio->siguiente->elemento==1 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "Insertar Inicio"
+    "lista_insertar_en_posicion( INICIO )"
   );
 
   lista_insertar_en_posicion( lista, &num[4], 2 );
@@ -129,7 +127,14 @@ void probar_insertar(){
     *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==5 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==2 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "Insertar en posicion"
+    "lista_insertar_en_posicion( N )"
+  );
+
+  lista_insertar_en_posicion( lista, &num[0], 10 );
+  pa2m_afirmar(
+    lista->cantidad == 7 &&
+    *(int*)lista->nodo_fin->elemento==1 ,
+    "lista_insertar_en_posicion( FIN )"
   );
 
   lista_destruir( lista );// Checkeada con valgrind
@@ -148,11 +153,86 @@ void probar_eliminar(){
     *(int*)lista->nodo_inicio->siguiente->elemento == 2 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->elemento== 3 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento == 4 &&
+    *(int*)lista->nodo_fin->elemento == 4 &&
     !lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente ,
-    "Eliminar"
+    "lista_borrar"
+  );
+
+  lista_borrar_de_posicion( lista, 5 );
+  pa2m_afirmar(
+    lista->cantidad == 3 &&
+    *(int*)lista->nodo_inicio->elemento== 1 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento == 2 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento== 3 &&
+    *(int*)lista->nodo_fin->elemento== 3 &&
+    !lista->nodo_inicio->siguiente->siguiente->siguiente ,
+    "lista_borrar_de_posicion( FIN )"
+  );
+
+  lista_borrar_de_posicion( lista, 0 );
+  pa2m_afirmar(
+    lista->cantidad == 2 &&
+    *(int*)lista->nodo_inicio->elemento== 2 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento == 3 &&
+    !lista->nodo_inicio->siguiente->siguiente ,
+    "lista_borrar_de_posicion( INICIO )"
+  );
+
+  for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] ); // 2 3 1 2 3 4 5
+  for( int i=0; i<3; i++ ) lista_borrar_de_posicion( lista, 2 ); // 2 3 4 5
+  pa2m_afirmar(
+    lista->cantidad == 4 &&
+    *(int*)lista->nodo_inicio->elemento== 2 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento == 3 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento== 4 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento == 5 &&
+    !lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente ,
+    "lista_borrar_de_posicion( N )"
   );
 
   lista_destruir( lista );// Checkeada con valgrind
+}
+
+void probar_ver_datos(){
+
+  lista_t* lista = lista_crear() ;
+  int num[5] = {1,2,3,4,5};
+  for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
+
+  pa2m_afirmar(
+    *(int*)lista_ultimo(lista)==5,
+    "lista_ultimo"
+  );
+  pa2m_afirmar(
+    *(int*)lista_elemento_en_posicion(lista,0)==1 &&
+    *(int*)lista_elemento_en_posicion(lista,1)==2 &&
+    *(int*)lista_elemento_en_posicion(lista,2)==3 &&
+    *(int*)lista_elemento_en_posicion(lista,3)==4 &&
+    *(int*)lista_elemento_en_posicion(lista,4)==5 ,
+    "lista_elemento_en_posicion"
+  );
+
+  pa2m_afirmar(
+    lista_elementos(lista)==5,
+    "lista_elementos"
+  );
+
+  pa2m_afirmar(
+    !lista_vacia(lista),
+    "lista_vacia (NO VACIA)"
+  );
+  for(int i=0; i<10; i++)
+    lista_borrar(lista);
+
+  pa2m_afirmar(
+    lista_vacia(lista),
+    "lista_vacia (VACIA)"
+  );
+
+
+
+  lista_destruir( lista );
+
 }
 
 // BUJIAS
@@ -170,6 +250,9 @@ int main(int argc, char const *argv[]) {
 
       pa2m_nuevo_grupo("PRUEBAS DE ELIMINAR");
       probar_eliminar();
+
+      pa2m_nuevo_grupo("PRUEBAS DE VER DATOS");
+      probar_ver_datos();
     }
 
     printf("\n");
