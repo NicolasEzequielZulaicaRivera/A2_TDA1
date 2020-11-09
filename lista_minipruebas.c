@@ -305,6 +305,21 @@ void probar_cola(){
   lista_destruir( lista );
 }
 
+void pruebas_de_iterador(){
+  lista_t* lista = lista_crear();
+  lista_destruir( lista );
+}
+
+void pruebas_de_lista_vacia(){
+  lista_t* lista = lista_crear();
+  lista_destruir( lista );
+}
+
+void pruebas_de_NULL(){
+  lista_t* lista = lista_crear();
+  lista_destruir( lista );
+}
+
 int main(int argc, char const *argv[]) {
 
     if( argc == 2 && !strcmp( argv[1], "minipruebas" ) ){
@@ -325,6 +340,15 @@ int main(int argc, char const *argv[]) {
 
       pa2m_nuevo_grupo("PRUEBAS DE COLA");
       probar_cola();
+
+      pa2m_nuevo_grupo("PRUEBAS DE ITERADOR");
+      pruebas_de_iterador();
+
+      pa2m_nuevo_grupo("PRUEBAS DE LISTA VACIA");
+      pruebas_de_lista_vacia();
+
+      pa2m_nuevo_grupo("PRUEBAS DE ARGUMENTO NULO");
+      pruebas_de_NULL();
 
     }
 

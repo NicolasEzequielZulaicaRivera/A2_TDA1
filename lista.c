@@ -1,6 +1,9 @@
 #include "lista.h"
 #include <stdlib.h>
 
+const int EXITO =  0;
+const int FALLO = -1;
+
 
 lista_t* lista_crear(){
 
@@ -19,10 +22,10 @@ lista_t* lista_crear(){
  * Devuelve 0 si pudo insertar o -1 si no pudo.
  */
 int lista_insertar_inicio(lista_t* lista, void* elemento){
-  if( !lista ) return -1;
+  if( !lista ) return FALLO;
 
   nodo_t* nodo = malloc( sizeof(nodo_t) );
-  if( !nodo ) return -1;
+  if( !nodo ) return FALLO;
 
   nodo->elemento = elemento;
   nodo->siguiente = NULL;
@@ -37,15 +40,34 @@ int lista_insertar_inicio(lista_t* lista, void* elemento){
 
   lista->cantidad ++;
 
-  return 0;
+  return EXITO;
+}
+
+/*
+ * Devuelve el nodo en la posicion indicada, donde 0 es el primer
+ * elemento.
+ *
+ * Si no existe dicha posicion devuelve NULL.
+ */
+nodo_t* nodo_en_posicion( lista_t* lista, size_t posicion ){
+  if(!lista) return NULL;
+  if( posicion >= lista->cantidad ) return NULL;
+
+  nodo_t* nodo = lista->nodo_inicio;
+  for( int i=0 ; i < posicion ; i++ ){
+    if(!nodo) return NULL;
+    nodo = nodo->siguiente;
+  }
+
+  return nodo;
 }
 
 int lista_insertar(lista_t* lista, void* elemento){
 
-  if( !lista ) return -1;
+  if( !lista ) return FALLO;
 
   nodo_t* nodo = malloc( sizeof(nodo_t) );
-  if( !nodo ) return -1;
+  if( !nodo ) return FALLO;
 
   nodo->elemento = elemento;
   nodo->siguiente = NULL;
@@ -60,68 +82,53 @@ int lista_insertar(lista_t* lista, void* elemento){
 
   lista->cantidad ++;
 
-  return 0;
+  return EXITO;
 }
 
 int lista_insertar_en_posicion(lista_t* lista, void* elemento, size_t posicion){
 
-  if(!lista) return -1;
+  if(!lista) return FALLO;
   if( posicion > lista->cantidad ) posicion = lista->cantidad;
 
   if( posicion == 0 ) return lista_insertar_inicio( lista, elemento );
   if( posicion == lista->cantidad ) return lista_insertar( lista, elemento );
 
-  nodo_t* nodo_anterior = lista->nodo_inicio;
-
-  for( int i=0 ; i < posicion-1 ; i++ ){
-    if(!nodo_anterior) return-1;
-    nodo_anterior = nodo_anterior->siguiente;
-  }
+  nodo_t* nodo_anterior = nodo_en_posicion(lista, posicion-1);
 
   nodo_t* nuevo_nodo = malloc( sizeof(nodo_t) );
-  if( !nuevo_nodo ) return -1;
+  if( !nuevo_nodo ) return FALLO;
   nuevo_nodo->elemento = elemento;
   nuevo_nodo->siguiente = nodo_anterior->siguiente;
   nodo_anterior->siguiente = nuevo_nodo;
 
-  return 0;
+  return EXITO;
 }
 
 int lista_borrar(lista_t* lista){
-  if(!lista) return -1;
-
-  if( lista->cantidad == 0 ) return -1;
+  if(!lista) return FALLO;
+  if( lista->cantidad == 0 ) return FALLO;
 
   if( lista->cantidad == 1 ){
       free( lista->nodo_inicio );
       lista->nodo_inicio = lista->nodo_fin = NULL;
       lista->cantidad--;
-      return 0;
+      return EXITO;
   }
 
-  nodo_t* anteultimo = lista->nodo_inicio;
-
-  for( int i=1 ; i < lista->cantidad-1 ; i++ ){
-    if(!anteultimo) return-1;
-    anteultimo = anteultimo->siguiente;
-  }
-
-  if( anteultimo->siguiente != lista->nodo_fin )
-    return -1;
+  nodo_t* anteultimo = nodo_en_posicion( lista, lista->cantidad-2 );
+  if( anteultimo->siguiente != lista->nodo_fin ) return FALLO;
 
   free( anteultimo->siguiente );
-
   lista->nodo_fin = anteultimo;
   anteultimo->siguiente = NULL;
-
   lista->cantidad--;
 
-  return 0;
+  return EXITO;
 }
 
 int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
-  if(!lista) return -1;
-  if( lista->cantidad == 0 ) return -1;
+  if(!lista) return FALLO;
+  if( lista->cantidad == 0 ) return FALLO;
   if( posicion >= lista->cantidad ) posicion = lista->cantidad-1;
 
   if( posicion == lista->cantidad-1 ) return lista_borrar( lista );
@@ -130,23 +137,16 @@ int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
     lista->nodo_inicio = lista->nodo_inicio->siguiente;
     free( aux );
     lista->cantidad--;
-    return 0;
+    return EXITO;
   }
 
-  nodo_t* nodo_anterior = lista->nodo_inicio;
-
-  for( int i=0 ; i < posicion-1 ; i++ ){
-    if(!nodo_anterior) return-1;
-    nodo_anterior = nodo_anterior->siguiente;
-  }
-
+  nodo_t* nodo_anterior = nodo_en_posicion( lista , posicion-1 );
   nodo_t* nodo = nodo_anterior->siguiente;
   nodo_anterior->siguiente = nodo->siguiente;
   free( nodo );
-
   lista->cantidad--;
 
-  return 0;
+  return EXITO;
 }
 
 void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
@@ -154,12 +154,8 @@ void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
   if( posicion >= lista->cantidad ) return NULL;
   if( posicion == lista->cantidad-1 ) return lista_ultimo(lista);
 
-  nodo_t* nodo = lista->nodo_inicio;
-
-  for( int i=0 ; i < posicion ; i++ ){
-    if(!nodo) return NULL;
-    nodo = nodo->siguiente;
-  }
+  nodo_t* nodo = nodo_en_posicion( lista, posicion );
+  if( !nodo ) return NULL;
 
   return nodo->elemento;
 }
@@ -178,7 +174,7 @@ bool lista_vacia(lista_t* lista){
 }
 
 size_t lista_elementos(lista_t* lista){
-  if(!lista) return 0;
+  if(!lista) return (size_t)EXITO;
   return lista->cantidad;
 }
 
@@ -282,5 +278,5 @@ void lista_iterador_destruir(lista_iterador_t* iterador){
  * La función retorna la cantidad de elementos iterados o 0 en caso de error.
  */
 size_t lista_con_cada_elemento(lista_t* lista, bool (*funcion)(void*, void*), void *contexto){
-  return 0;
+  return (size_t)EXITO;
 }
