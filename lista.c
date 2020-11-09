@@ -149,12 +149,6 @@ int lista_borrar_de_posicion(lista_t* lista, size_t posicion){
   return 0;
 }
 
-/*
- * Devuelve el elemento en la posicion indicada, donde 0 es el primer
- * elemento.
- *
- * Si no existe dicha posicion devuelve NULL.
- */
 void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
   if( !lista ) return NULL;
   if( posicion >= lista->cantidad ) return NULL;
@@ -170,10 +164,6 @@ void* lista_elemento_en_posicion(lista_t* lista, size_t posicion){
   return nodo->elemento;
 }
 
-/*
- * Devuelve el último elemento de la lista o NULL si la lista se
- * encuentra vacía.
- */
 void* lista_ultimo(lista_t* lista){
   if( !lista ) return NULL;
   if( !lista->nodo_fin ) return NULL;
@@ -192,57 +182,30 @@ size_t lista_elementos(lista_t* lista){
   return lista->cantidad;
 }
 
-/*
- * Apila un elemento.
- * Devuelve 0 si pudo o -1 en caso contrario.
- */
 int lista_apilar(lista_t* lista, void* elemento){
-  return 0;
+  return lista_insertar_inicio( lista, elemento );
 }
 
-/*
- * Desapila un elemento.
- * Devuelve 0 si pudo desapilar o -1 si no pudo.
- */
 int lista_desapilar(lista_t* lista){
-  return 0;
+  return lista_borrar_de_posicion( lista, 0 );
 }
 
-/*
- * Devuelve el elemento en el tope de la pila o NULL
- * en caso de estar vacía.
- */
 void* lista_tope(lista_t* lista){
-  return NULL;
+  return lista_elemento_en_posicion(lista,0);
 }
 
-/*
- * Encola un elemento.
- * Devuelve 0 si pudo encolar o -1 si no pudo.
- */
 int lista_encolar(lista_t* lista, void* elemento){
-  return 0;
+  return lista_insertar( lista, elemento );
 }
 
-/*
- * Desencola un elemento.
- * Devuelve 0 si pudo desencolar o -1 si no pudo.
- */
 int lista_desencolar(lista_t* lista){
-  return 0;
+  return lista_borrar_de_posicion(lista,0);
 }
 
-/*
- * Devuelve el primer elemento de la cola o NULL en caso de estar
- * vacía.
- */
 void* lista_primero(lista_t* lista){
-  return NULL;
+  return lista_elemento_en_posicion(lista,0);
 }
 
-/*
- * Libera la memoria reservada por la lista.
- */
 void lista_destruir(lista_t* lista){
 
   if( !lista ) return;

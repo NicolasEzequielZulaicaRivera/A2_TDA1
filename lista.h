@@ -32,8 +32,6 @@ lista_t* lista_crear();
  */
 int lista_insertar(lista_t* lista, void* elemento);
 
-int lista_insertar_inicio(lista_t* lista, void* elemento);
-
 /*
  * Inserta un elemento en la posicion indicada, donde 0 es insertar
  * como primer elemento y 1 es insertar luego del primer elemento.

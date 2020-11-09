@@ -108,7 +108,8 @@ void probar_insertar(){
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==4 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente->elemento==5 &&
     *(int*)lista->nodo_fin->elemento==5 ,
-    "lista_insertar");
+    "lista_insertar"
+  );
 
   lista_insertar_en_posicion( lista, &num[4], 0 );
   pa2m_afirmar(
@@ -235,14 +236,79 @@ void probar_ver_datos(){
 
 }
 
-// BUJIAS
+void probar_pila(){
+  lista_t* lista = lista_crear();
+  int num[5] = {1,2,3,4,5};
+
+  for( int i = 0; i<5; i++ ) lista_apilar( lista, &num[i] );
+  pa2m_afirmar(
+    lista->cantidad == 5 &&
+    *(int*)lista->nodo_inicio->elemento==5 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==4 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==3 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==2 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente->elemento==1 &&
+    *(int*)lista->nodo_fin->elemento==1 ,
+    "lista_apilar"
+  );
+
+  for( int i = 0; i<2; i++ ) lista_desapilar( lista );
+  pa2m_afirmar(
+    lista->cantidad == 3 &&
+    *(int*)lista->nodo_inicio->elemento==3 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==2 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==1 &&
+    *(int*)lista->nodo_fin->elemento==1 ,
+    "lista_desapilar"
+  );
+
+  pa2m_afirmar(
+    *(int*)lista_tope( lista ) == 3,
+    "lista_tope"
+  );
+
+  lista_destruir( lista );
+}
+
+void probar_cola(){
+
+  lista_t* lista = lista_crear();
+  int num[5] = {1,2,3,4,5};
+
+  for( int i = 0; i<5; i++ ) lista_encolar( lista, &num[i] );
+  pa2m_afirmar(
+    lista->cantidad == 5 &&
+    *(int*)lista->nodo_inicio->elemento==1 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==2 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==3 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->elemento==4 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->siguiente->siguiente->elemento==5 &&
+    *(int*)lista->nodo_fin->elemento==5 ,
+    "lista_encolar"
+  );
+
+  for( int i = 0; i<2; i++ ) lista_desencolar( lista );
+  pa2m_afirmar(
+    lista->cantidad == 3 &&
+    *(int*)lista->nodo_inicio->elemento==3 &&
+    *(int*)lista->nodo_inicio->siguiente->elemento==4 &&
+    *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==5 &&
+    *(int*)lista->nodo_fin->elemento==5 ,
+    "lista_desapilar"
+  );
+
+  pa2m_afirmar(
+    *(int*)lista_primero( lista ) == 3,
+    "lista_primero"
+  );
+
+  lista_destruir( lista );
+}
 
 int main(int argc, char const *argv[]) {
 
-    printf("%i\n", argc );
-
     if( argc == 2 && !strcmp( argv[1], "minipruebas" ) ){
-      //mini_pruebas_originales();
+      mini_pruebas_originales();
     } else {
 
       pa2m_nuevo_grupo("PRUEBAS DE INSERTAR");
@@ -253,6 +319,13 @@ int main(int argc, char const *argv[]) {
 
       pa2m_nuevo_grupo("PRUEBAS DE VER DATOS");
       probar_ver_datos();
+
+      pa2m_nuevo_grupo("PRUEBAS DE PILA");
+      probar_pila();
+
+      pa2m_nuevo_grupo("PRUEBAS DE COLA");
+      probar_cola();
+
     }
 
     printf("\n");

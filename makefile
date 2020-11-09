@@ -12,7 +12,7 @@ run: lista
 	./lista
 
 minipruebas: lista
-		./lista minipruebas
+		valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./lista minipruebas
 
 zip:
 	zip A2_TDA1.zip *.c *.h *.pdf *.md Makefile
