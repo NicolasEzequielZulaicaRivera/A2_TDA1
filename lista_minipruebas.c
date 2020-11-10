@@ -9,6 +9,16 @@ bool mostrar_elemento(void* elemento, void* contador){
     return true;
 }
 
+void mostrar_lista_char(lista_t* lista){
+  nodo_t* nodo = lista->nodo_inicio;
+
+  while (nodo) {
+    printf(" %c -", *(char*)(nodo->elemento) );
+    nodo = nodo->siguiente;
+  }
+  printf("\n");
+}
+
 void probar_operaciones_lista(){
     lista_t* lista = lista_crear();
     char a='a', b='b', c='c', d='d', w='w';
@@ -122,7 +132,7 @@ void probar_insertar(){
 
   lista_insertar_en_posicion( lista, &num[4], 2 );
   pa2m_afirmar(
-    lista->cantidad == 6 &&
+    lista->cantidad == 7 &&
     *(int*)lista->nodo_inicio->elemento==5 &&
     *(int*)lista->nodo_inicio->siguiente->elemento==1 &&
     *(int*)lista->nodo_inicio->siguiente->siguiente->elemento==5 &&
@@ -133,7 +143,7 @@ void probar_insertar(){
 
   lista_insertar_en_posicion( lista, &num[0], 10 );
   pa2m_afirmar(
-    lista->cantidad == 7 &&
+    lista->cantidad == 8 &&
     *(int*)lista->nodo_fin->elemento==1 ,
     "lista_insertar_en_posicion( FIN )"
   );
@@ -305,18 +315,138 @@ void probar_cola(){
   lista_destruir( lista );
 }
 
+bool mayor_a( void* numero, void* referencia ){
+  return (*(int*)numero) > (*(int*)referencia) ;
+}
+
 void pruebas_de_iterador(){
   lista_t* lista = lista_crear();
+
+  int num[5] = {5,4,3,2,1}, ref = 2;
+  for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
+
+  size_t mayores = lista_con_cada_elemento( lista, mayor_a, &ref);
+
+  pa2m_afirmar(
+    mayores == 3,
+    "iterador interno "
+  );
+
+  int comparador = 5, correcto = 1;
+  lista_iterador_t* it = NULL;
+  for( it = lista_iterador_crear(lista); lista_iterador_tiene_siguiente(it); lista_iterador_avanzar(it) )
+    correcto = correcto && *(int*)lista_iterador_elemento_actual(it) == (comparador--);
+
+  pa2m_afirmar(
+    correcto,
+    "iterador externo "
+  );
+
+  lista_iterador_destruir(it);
+
   lista_destruir( lista );
 }
 
 void pruebas_de_lista_vacia(){
   lista_t* lista = lista_crear();
+
+  pa2m_afirmar(
+    lista_borrar(lista) == -1 &&
+    lista_borrar_de_posicion(lista,0) == -1 &&
+    lista_borrar_de_posicion(lista,1) == -1 &&
+    !lista_elemento_en_posicion(lista,0) &&
+    !lista_elemento_en_posicion(lista,1) &&
+    !lista_ultimo(lista) &&
+    !lista_elementos(lista),
+    "lista vacia"
+  );
+
+  pa2m_afirmar(
+    lista_desapilar(lista) == -1 &&
+    !lista_tope(lista),
+    "pila vacia"
+  );
+
+  pa2m_afirmar(
+    lista_desencolar(lista) == -1 &&
+    !lista_primero(lista),
+    "cola vacia"
+  );
+
+  pa2m_afirmar(
+    !lista_iterador_crear(lista) &&
+    !lista_con_cada_elemento(lista, NULL, NULL),
+    "iterador de lista vacia"
+  );
+
   lista_destruir( lista );
 }
 
 void pruebas_de_NULL(){
+
+  pa2m_afirmar(
+    lista_insertar(NULL,NULL) == -1 &&
+    lista_insertar_en_posicion(NULL,NULL,0) == -1 &&
+    lista_insertar_en_posicion(NULL,NULL,1) == -1 &&
+    lista_borrar(NULL) == -1 &&
+    lista_borrar_de_posicion(NULL,0) == -1 &&
+    lista_borrar_de_posicion(NULL,1) == -1 &&
+    !lista_elemento_en_posicion(NULL,0) &&
+    !lista_elemento_en_posicion(NULL,1) &&
+    !lista_ultimo(NULL) &&
+    !lista_elementos(NULL),
+    "lista NULL"
+  );
+
+  pa2m_afirmar(
+    lista_apilar(NULL,NULL) == -1 &&
+    lista_desapilar(NULL) == -1 &&
+    !lista_tope(NULL),
+    "pila NULL"
+  );
+
+  pa2m_afirmar(
+    lista_encolar(NULL,NULL) == -1 &&
+    lista_desencolar(NULL) == -1 &&
+    !lista_primero(NULL),
+    "cola NULL"
+  );
+
+  pa2m_afirmar(
+    !lista_iterador_crear(NULL) &&
+    !lista_con_cada_elemento(NULL, NULL, NULL),
+    "iterador de lista NULL"
+  );
+
+  pa2m_afirmar(
+    !lista_iterador_tiene_siguiente(NULL) &&
+    !lista_iterador_avanzar(NULL) &&
+    !lista_iterador_elemento_actual(NULL),
+    "iterador NULL"
+  );
+}
+
+void pruebas_de_funcionamiento(){
+
   lista_t* lista = lista_crear();
+
+  int num[5] = {1,2,3,4,5};
+  for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
+
+  while ( !lista_vacia(lista) )lista_borrar_de_posicion(lista,0);
+  pa2m_afirmar(
+    !lista->cantidad &&
+    !lista->nodo_inicio &&
+    !lista->nodo_fin ,
+    "borrar varios"
+  );
+
+  //int correcto = 1;
+
+  char abecedario[] = "abcdefghijklmopqrstuvwxyz";
+  for( int i = 0; i<5; i++ ) lista_insertar( lista, &abecedario[i] ); //abcde
+
+
   lista_destruir( lista );
 }
 
@@ -349,6 +479,9 @@ int main(int argc, char const *argv[]) {
 
       pa2m_nuevo_grupo("PRUEBAS DE ARGUMENTO NULO");
       pruebas_de_NULL();
+
+      pa2m_nuevo_grupo("PRUEBAS DE FUNCIONAMIENTO");
+      pruebas_de_funcionamiento();
 
     }
 
