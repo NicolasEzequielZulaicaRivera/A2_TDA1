@@ -431,7 +431,8 @@ void pruebas_de_funcionamiento(){
   lista_t* lista = lista_crear();
 
   int num[5] = {1,2,3,4,5};
-  for( int i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
+  size_t i;
+  for( i = 0; i<5; i++ ) lista_insertar( lista, &num[i] );
 
   while ( !lista_vacia(lista) )lista_borrar_de_posicion(lista,0);
   pa2m_afirmar(
@@ -441,10 +442,48 @@ void pruebas_de_funcionamiento(){
     "borrar varios"
   );
 
-  //int correcto = 1;
+  int correcto = 1;
+  char esperado [50];
 
   char abecedario[] = "abcdefghijklmopqrstuvwxyz";
-  for( int i = 0; i<5; i++ ) lista_insertar( lista, &abecedario[i] ); //abcde
+  size_t letras = strlen(abecedario);
+  for( i = 0; i<5; i++ ) lista_insertar( lista, &abecedario[i] ); //abcde
+  for( i = 0; i<5; i++ ) lista_insertar_en_posicion( lista, &abecedario[i+5],3 ); //abcjihgfde
+  for( i = 0; i<5; i++ ) lista_insertar_en_posicion( lista, &abecedario[i+20],100 ); //abcjihgfdevwxyz
+  for( i = 0; i<2; i++ ) lista_borrar( lista ); //abcjihgfdevwx
+  for( i = 0; i<2; i++ ) lista_borrar_de_posicion( lista, i*2 ); //bcihgfdevwx
+  strcpy( esperado, "bcihgfdevwx" );
+  letras = strlen(esperado);
+  correcto = ( letras == lista->cantidad );
+  for( i=0; i<letras; i++ ){
+    correcto = correcto && ( esperado[i] == *(char*)lista_elemento_en_posicion(lista,i) );
+  }
+  pa2m_afirmar( correcto, "funcionamiento de lista" );
+  while ( !lista_vacia(lista) )lista_borrar_de_posicion(lista,0);
+
+  letras = strlen(abecedario);
+
+  for( i = 0; i<letras; i++ ) lista_apilar( lista, &abecedario[i] );
+  correcto = ( letras == lista->cantidad );
+  for( i = 0; i<letras; i++ ){
+    correcto = correcto && *(char*)lista_tope(lista) == abecedario[letras-1-i];// LIFO
+    lista_desapilar(lista);
+  }
+  correcto = correcto && lista_vacia( lista );
+  pa2m_afirmar( correcto, "funcionamiento de pila" );
+
+  for( i = 0; i<letras; i++ ) lista_encolar( lista, &abecedario[i] );
+  correcto = ( letras == lista->cantidad );
+  for( i = 0; i<letras; i++ ){
+    correcto = correcto && *(char*)lista_tope(lista) == abecedario[i];// FIFO
+    lista_desencolar(lista);
+  }
+  correcto = correcto && lista_vacia( lista );
+  pa2m_afirmar( correcto, "funcionamiento de cola" );
+
+
+  mostrar_lista_char(lista);
+
 
 
   lista_destruir( lista );
