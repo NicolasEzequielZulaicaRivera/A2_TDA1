@@ -80,6 +80,14 @@ Para el caso de una lista, este recorrido sera secuencial ( de inicio a fin ).
 - Iterador Externo: es un tda que nos permitira controlar la iteracion mediante sus metodos. 
   Un ejemplo de implementacion de iterador externo:
   ```C
-  
+    lista_iterador_t* it = NULL;
+
+    for(it = lista_iterador_crear(lista);
+        lista_iterador_tiene_siguiente(it);
+        lista_iterador_avanzar(it))
+        printf("%c ", *(char*)lista_iterador_elemento_actual(it));
+    printf("\n\n");
+
+    lista_iterador_destruir(it);
   ```
 
