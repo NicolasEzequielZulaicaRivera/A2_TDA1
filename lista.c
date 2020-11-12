@@ -54,7 +54,7 @@ nodo_t* nodo_en_posicion( lista_t* lista, size_t posicion ){
   if( posicion >= lista->cantidad ) return NULL;
 
   nodo_t* nodo = lista->nodo_inicio;
-  for( int i=0 ; i < posicion ; i++ ){
+  for( size_t i=0 ; i < posicion ; i++ ){
     if(!nodo) return NULL;
     nodo = nodo->siguiente;
   }
