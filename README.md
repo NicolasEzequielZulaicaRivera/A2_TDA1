@@ -18,7 +18,7 @@
   
   ### Cola
   Este tipo de dato nos permite almacenar diferentes elementos de manera ordenada, acceder a ellos y eliminarlos de la estructura.
-  Se caracteriza por su sistema FIFO (FIFO in, first out), es decir, solo tendremos acceso al elemento insertado con mayor antiguedad.
+  Se caracteriza por su sistema FIFO (first in, first out), es decir, solo tendremos acceso al elemento insertado con mayor antiguedad.
 
   **Importante :** Las funciones implementadas reservan *memoria dinamica* para la utilizacion de las estructuras, por lo que es imperativo que esta se libere antes de finalizar el programa.
   Esto se realiza mediante el uso de las funciones `lista_destruir`. Ademas, cualquier memoria reservada por el usuario queda a su discrecion y responsabilidad liberar, ya que la estructura no se encargara de liberarla al borrar elementos.
