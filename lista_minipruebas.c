@@ -416,11 +416,14 @@ void pruebas_de_NULL(){
     "cola NULL"
   );
 
+  lista_t * lista = lista_crear() ;
   pa2m_afirmar(
     !lista_iterador_crear(NULL) &&
-    !lista_con_cada_elemento(NULL, NULL, NULL),
+    !lista_con_cada_elemento(NULL, NULL, NULL) &&
+    !lista_con_cada_elemento(lista, NULL, NULL) ,
     "iterador de lista NULL"
   );
+  lista_destruir(lista);
 
   pa2m_afirmar(
     !lista_iterador_tiene_siguiente(NULL) &&
@@ -428,6 +431,7 @@ void pruebas_de_NULL(){
     !lista_iterador_elemento_actual(NULL),
     "iterador NULL"
   );
+
 }
 
 void pruebas_de_funcionamiento(){

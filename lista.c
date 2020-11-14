@@ -169,7 +169,7 @@ void* lista_ultimo(lista_t* lista){
 }
 
 bool lista_vacia(lista_t* lista){
-  if( !lista ) return false;
+  if( !lista ) return true;
 
   if( !lista->cantidad ) return true;
   return false;
@@ -246,7 +246,7 @@ bool lista_iterador_avanzar(lista_iterador_t* iterador){
 
   iterador->corriente = iterador->corriente->siguiente;
 
-  return true;
+  return iterador->corriente;
 }
 
 void* lista_iterador_elemento_actual(lista_iterador_t* iterador){
@@ -263,6 +263,7 @@ size_t lista_con_cada_elemento(lista_t* lista, bool (*funcion)(void*, void*), vo
 
   if(!lista) return 0;
   if(!lista->nodo_inicio) return 0;
+  if(!funcion) return 0;
 
   size_t elementos = 0;
   nodo_t* nodo = lista->nodo_inicio;
