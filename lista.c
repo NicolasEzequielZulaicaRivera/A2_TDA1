@@ -224,7 +224,6 @@ void lista_destruir(lista_t* lista){
 
 lista_iterador_t* lista_iterador_crear(lista_t* lista){
   if(!lista) return NULL;
-  if(!lista->nodo_inicio) return NULL;
 
   lista_iterador_t* iterador = malloc( sizeof(lista_iterador_t) );
 

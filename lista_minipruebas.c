@@ -373,11 +373,15 @@ void pruebas_de_lista_vacia(){
     "cola vacia"
   );
 
+  lista_iterador_t* it = lista_iterador_crear(lista);
+
   pa2m_afirmar(
-    !lista_iterador_crear(lista) &&
+    it && !lista_iterador_tiene_siguiente( it ) &&
     !lista_con_cada_elemento(lista, NULL, NULL),
     "iterador de lista vacia"
   );
+
+  lista_iterador_destruir( it );
 
   lista_destruir( lista );
 }
